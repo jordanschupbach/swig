@@ -1049,7 +1049,7 @@ int R::OutputMemberReferenceMethod(String *className, int isSet,
     Printf(out, ");\n");
   }
 
-  Printf(out, "# ]]] end of accessor method for %s\n", classname_str);
+  Printf(out, "# ]]] end of accessor method for %s\n\n", classname_str);
 
   Delete(classname_str);
   DelWrapper(attr);
@@ -1511,7 +1511,7 @@ void R::dispatchFunction(Node *n) {
     Replace(sfname, "new_", "", DOH_REPLACE_FIRST);
 
   Printf(f->def,
-	 "# [[[ Start of %s\n`%s` <- function(...) {", sfname, sfname);
+	 "# [[[ Start of %s dispatch fun\n`%s` <- function(...) {", sfname, sfname);
   if (debugMode) {
     Swig_print_node(n);
   }
@@ -1598,9 +1598,9 @@ void R::dispatchFunction(Node *n) {
       "}", sfname);
   Printv(f->code, ";\nf(...)", NIL);
   Printv(f->code, ";\n}", NIL);
-  Printf(f->code, "\n# ]]] End of %s", sfname);
+  Printf(f->code, "\n# ]]] End of %s dispatch fun", sfname);
   Wrapper_print(f, sfile);
-  Printv(sfile, "# Dispatch function\n", NIL);
+  // Printv(sfile, "# Dispatch function\n", NIL);
   DelWrapper(f);
 }
 
@@ -2331,7 +2331,10 @@ int R::classDeclaration(Node *n) {
     class_member_function_wrappernames = NULL;
    }
   if (Getattr(n, "has_destructor")) {
+
+    Printf(sfile, "# [[[ destructor for %s\n", name);
     Printf(sfile, "setMethod('delete', '_p%s', function(obj) {delete%s(obj)})\n", getRClassName(name), getRClassName(name));
+    Printf(sfile, "# ]]] destructor for %s\n", name);
 
   }
   if(!opaque && !Strcmp(kind, "struct") && copyStruct) {
