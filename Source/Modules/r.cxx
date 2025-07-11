@@ -266,26 +266,20 @@ protected:
     Setattr(functionPointerProxyTable, name, n);
 
     Setattr(SClassDefs, name, name);
-    Printv(s_classes, "setClass('",
-	   name,
-	   "',\n", tab8,
-	   "prototype = list(parameterTypes = c(", s_paramTypes, "),\n",
-	   tab8, tab8, tab8,
-	   "returnType = '", SwigType_manglestr(t), "'),\n", tab8,
-	   "contains = 'CRoutinePointer')\n\n##\n", NIL);
+    Printv(s_classes, "setClass('", name, "',\n", tab8,
+           "prototype = list(parameterTypes = c(", s_paramTypes, "),\n", tab8,
+           tab8, tab8, "returnType = '", SwigType_manglestr(t), "'),\n", tab8,
+           "contains = 'CRoutinePointer')\n\n##\n", NIL);
 
     return SWIG_OK;
   }
 
-
-  void addSMethodInfo(String *name,
-		      String *argType, int nargs);
+  void addSMethodInfo(String *name, String *argType, int nargs);
   // Simple initialization such as constant strings that can be reused.
   void init();
 
-
-  void addAccessor(String *memberName, Wrapper *f,
-		   String *name, String *methodSetGet);
+  void addAccessor(String *memberName, Wrapper *f, String *name,
+                   String *methodSetGet);
 
   static int getFunctionPointerNumArgs(Node *n, SwigType *tt);
 
@@ -369,59 +363,27 @@ protected:
   static bool debugMode;
 };
 
-R::R() :
-  copyStruct(false),
-  memoryProfile(false),
-  aggressiveGc(false),
-  enum_values(0),
-  enum_def_calls(0),
-  sfile(0),
-  f_init(0),
-  s_classes(0),
-  f_begin(0),
-  f_runtime(0),
-  f_wrapper(0),
-  s_header(0),
-  f_wrappers(0),
-  s_init(0),
-  s_init_routine(0),
-  s_namespace(0),
-  opaqueClassDeclaration(0),
-  processing_variable(0),
-  processing_member_access_function(0),
-  member_name(0),
-  class_name(0),
-  R_MEMBER_NORMAL(NewString("normal")),
-  R_MEMBER_SET(NewString("set")),
-  R_MEMBER_GET(NewString("get")),
-  processing_class_member_function(0),
-  class_member_function_types(0),
-  class_member_function_names(0),
-  class_member_function_membernames(0),
-  class_member_function_wrappernames(0),
-  ClassMemberTable(0),
-  ClassMethodsTable(0),
-  SClassDefs(0),
-  SMethodInfo(0),
-  registrationTable(0),
-  functionPointerProxyTable(0),
-  namespaceFunctions(0),
-  namespaceMethods(0),
-  namespaceClasses(0),
-  Argv(0),
-  Argc(0),
-  inCPlusMode(false),
-  DllName(0),
-  Rpackage(0),
-  noInitializationCode(false),
-  outputNamespaceInfo(false),
-  UnProtectWrapupCode(0) {
-}
+R::R()
+    : copyStruct(false), memoryProfile(false), aggressiveGc(false),
+      enum_values(0), enum_def_calls(0), sfile(0), f_init(0), s_classes(0),
+      f_begin(0), f_runtime(0), f_wrapper(0), s_header(0), f_wrappers(0),
+      s_init(0), s_init_routine(0), s_namespace(0), opaqueClassDeclaration(0),
+      processing_variable(0), processing_member_access_function(0),
+      member_name(0), class_name(0), R_MEMBER_NORMAL(NewString("normal")),
+      R_MEMBER_SET(NewString("set")), R_MEMBER_GET(NewString("get")),
+      processing_class_member_function(0), class_member_function_types(0),
+      class_member_function_names(0), class_member_function_membernames(0),
+      class_member_function_wrappernames(0), ClassMemberTable(0),
+      ClassMethodsTable(0), SClassDefs(0), SMethodInfo(0), registrationTable(0),
+      functionPointerProxyTable(0), namespaceFunctions(0), namespaceMethods(0),
+      namespaceClasses(0), Argv(0), Argc(0), inCPlusMode(false), DllName(0),
+      Rpackage(0), noInitializationCode(false), outputNamespaceInfo(false),
+      UnProtectWrapupCode(0) {}
 
 bool R::debugMode = false;
 
 int R::getFunctionPointerNumArgs(Node *n, SwigType *tt) {
-  (void) tt;
+  (void)tt;
   n = Getattr(n, "type");
   if (debugMode)
     Printf(stdout, "type: %s\n", n);
@@ -432,28 +394,27 @@ int R::getFunctionPointerNumArgs(Node *n, SwigType *tt) {
   return ParmList_len(parms);
 }
 
-
 void R::addSMethodInfo(String *name, String *argType, int nargs) {
-  (void) argType;
-
-  if(!SMethodInfo)
+  (void)argType;
+  if (!SMethodInfo) {
     SMethodInfo = NewHash();
-  if (debugMode)
+  }
+  if (debugMode) {
     Printf(stdout, "[addMethodInfo] %s\n", name);
-
+  }
   Hash *tb = Getattr(SMethodInfo, name);
-
-  if(!tb) {
+  if (!tb) {
     tb = NewHash();
     Setattr(SMethodInfo, name, tb);
   }
-
   String *str = Getattr(tb, "max");
   int max = -1;
-  if(str)
+  if (str) {
     max = atoi(Char(str));
-  if(max < nargs) {
-    if(str)  Delete(str);
+  }
+  if (max < nargs) {
+    if (str)
+      Delete(str);
     str = NewStringf("%d", max);
     Setattr(tb, "max", str);
   }
@@ -463,15 +424,18 @@ void R::addSMethodInfo(String *name, String *argType, int nargs) {
  * Returns the name of the new routine.
  * ------------------------------------------ */
 
-String * R::createFunctionPointerHandler(SwigType *t, Node *n, int *numArgs) {
+String *R::createFunctionPointerHandler(SwigType *t, Node *n, int *numArgs) {
   String *funName = SwigType_manglestr(t);
 
   /* See if we have already processed this one. */
-  if(functionPointerProxyTable && Getattr(functionPointerProxyTable, funName))
+  if (functionPointerProxyTable &&
+      Getattr(functionPointerProxyTable, funName)) {
     return funName;
+  }
 
-  if (debugMode)
-    Printf(stdout, "<createFunctionPointerHandler> Defining %s\n",  t);
+  if (debugMode) {
+    Printf(stdout, "<createFunctionPointerHandler> Defining %s\n", t);
+  }
 
   SwigType *rettype = Copy(Getattr(n, "type"));
   SwigType *funcparams = SwigType_functionpointer_decompose(rettype);
@@ -481,15 +445,16 @@ String * R::createFunctionPointerHandler(SwigType *t, Node *n, int *numArgs) {
   // memory leak
   ParmList *parms = SwigType_function_parms(SwigType_del_pointer(Copy(t)), n);
 
-
   if (debugMode) {
     Printf(stdout, "Type: %s\n", t);
     Printf(stdout, "Return type: %s\n", SwigType_base(t));
   }
 
   bool isVoidType = Strcmp(rettype, "void") == 0;
-  if (debugMode)
-    Printf(stdout, "%s is void ? %s  (%s)\n", funName, isVoidType ? "yes" : "no", rettype);
+  if (debugMode) {
+    Printf(stdout, "%s is void ? %s  (%s)\n", funName,
+           isVoidType ? "yes" : "no", rettype);
+  }
 
   Wrapper *f = NewWrapper();
 
@@ -500,32 +465,30 @@ String * R::createFunctionPointerHandler(SwigType *t, Node *n, int *numArgs) {
     String *arg = Getattr(p, "name");
     String *lname;
     if (!arg && Cmp(Getattr(p, "type"), "void")) {
-      lname = NewStringf("arg%d", i+1);
+      lname = NewStringf("arg%d", i + 1);
       Setattr(p, "name", lname);
     } else
       lname = arg;
-
     Setattr(p, "lname", lname);
   }
-
   Swig_typemap_attach_parms("out", parms, f);
   Swig_typemap_attach_parms("scoerceout", parms, f);
   Swig_typemap_attach_parms("scheck", parms, f);
-
   Printf(f->def, "%s %s(", rtype, funName);
-
   emit_parameter_variables(parms, f);
   emit_return_variable(n, rettype, f);
   //  emit_attach_parmmaps(parms,f);
 
   /*  Using weird name and struct to avoid potential conflicts. */
-  Wrapper_add_local(f, "r_swig_cb_data", "RCallbackFunctionData *r_swig_cb_data = R_SWIG_getCallbackFunctionData()");
+  Wrapper_add_local(f, "r_swig_cb_data",
+                    "RCallbackFunctionData *r_swig_cb_data = "
+                    "R_SWIG_getCallbackFunctionData()");
   String *lvar = NewString("r_swig_cb_data");
   bool r_tmp_needed = false;
 
   p = parms;
   int nargs = ParmList_len(parms);
-  if(numArgs) {
+  if (numArgs) {
     *numArgs = nargs;
     if (debugMode)
       Printf(stdout, "Setting number of parameters to %d\n", *numArgs);
@@ -533,7 +496,7 @@ String * R::createFunctionPointerHandler(SwigType *t, Node *n, int *numArgs) {
   String *setExprElements = NewString("");
 
   String *s_paramTypes = NewString("");
-  for(i = 0; p; i++) {
+  for (i = 0; p; i++) {
     SwigType *tt = Getattr(p, "type");
     SwigType *name = Getattr(p, "name");
     SwigType *swig_parm_name = NewStringf("swigarg_%s", name);
@@ -546,42 +509,52 @@ String * R::createFunctionPointerHandler(SwigType *t, Node *n, int *numArgs) {
     if (tm) {
       String *lstr = SwigType_lstr(tt, 0);
       if (SwigType_isreference(tt) || SwigType_isrvalue_reference(tt)) {
-	Printf(f->code, "%s = (%s) &%s;\n", Getattr(p, "lname"), lstr, swig_parm_name);
+        Printf(f->code, "%s = (%s) &%s;\n", Getattr(p, "lname"), lstr,
+               swig_parm_name);
       } else if (!isVoidParm) {
-	Printf(f->code, "%s = (%s) %s;\n", Getattr(p, "lname"), lstr, swig_parm_name);
+        Printf(f->code, "%s = (%s) %s;\n", Getattr(p, "lname"), lstr,
+               swig_parm_name);
       }
       Replaceall(tm, "$1", name);
       Replaceall(tm, "$result", "r_tmp");
       if (debugMode) {
-        Printf(stdout, "Calling Replace A: %s\n", Getattr(p,"type"));
+        Printf(stdout, "Calling Replace A: %s\n", Getattr(p, "type"));
       }
-      replaceRClass(tm, Getattr(p,"type"));
-      Replaceall(tm,"$owner", "0");
+      replaceRClass(tm, Getattr(p, "type"));
+      Replaceall(tm, "$owner", "0");
       Delete(lstr);
-    } 
+    }
 
     r_tmp_needed = true;
     Printf(setExprElements, "%s\n", tm);
     Printf(setExprElements, "SETCAR(r_swig_cb_data->el, %s);\n", "r_tmp");
-    Printf(setExprElements, "r_swig_cb_data->el = CDR(r_swig_cb_data->el);\n\n");
+    Printf(setExprElements,
+           "r_swig_cb_data->el = CDR(r_swig_cb_data->el);\n\n");
 
     Printf(s_paramTypes, "'%s'", SwigType_manglestr(tt));
 
     p = nextSibling(p);
-    if(p) {
+    if (p) {
       Printf(f->def, ", ");
       Printf(s_paramTypes, ", ");
     }
   }
 
-  Printf(f->def,  ") {\n");
+  Printf(f->def, ") {\n");
 
   if (r_tmp_needed)
-    Wrapper_add_local(f, "r_tmp", "SEXP r_tmp"); // for use in converting arguments to R objects for call.
-  Wrapper_add_local(f, "r_nprotect", "int r_nprotect = 0"); // for use in converting arguments to R objects for call.
-  Wrapper_add_local(f, "r_vmax", "char * r_vmax= 0"); // for use in converting arguments to R objects for call.
+    Wrapper_add_local(
+        f, "r_tmp",
+        "SEXP r_tmp"); // for use in converting arguments to R objects for call.
+  Wrapper_add_local(f, "r_nprotect",
+                    "int r_nprotect = 0"); // for use in converting arguments to
+                                           // R objects for call.
+  Wrapper_add_local(f, "r_vmax",
+                    "char * r_vmax= 0"); // for use in converting arguments to R
+                                         // objects for call.
 
-  Printf(f->code, "Rf_protect(%s->expr = Rf_allocVector(LANGSXP, %d));\n", lvar, nargs + 1);
+  Printf(f->code, "Rf_protect(%s->expr = Rf_allocVector(LANGSXP, %d));\n", lvar,
+         nargs + 1);
   Printf(f->code, "r_nprotect++;\n");
   Printf(f->code, "r_swig_cb_data->el = r_swig_cb_data->expr;\n\n");
 
@@ -591,37 +564,30 @@ String * R::createFunctionPointerHandler(SwigType *t, Node *n, int *numArgs) {
   Printf(f->code, "%s\n\n", setExprElements);
 
   Printv(f->code, "r_swig_cb_data->retValue = R_tryEval(",
-	 "r_swig_cb_data->expr,",
-	 " R_GlobalEnv,",
-	 " &r_swig_cb_data->errorOccurred",
-	 ");\n",
-	 NIL);
+         "r_swig_cb_data->expr,", " R_GlobalEnv,",
+         " &r_swig_cb_data->errorOccurred", ");\n", NIL);
 
-  Printv(f->code, "\n",
-	 "if(r_swig_cb_data->errorOccurred) {\n",
-	 "R_SWIG_popCallbackFunctionData(1);\n",
-	 "Rf_error(\"error in calling R function as a function pointer (",
-	 funName,
-	 ")\");\n",
-	 "}\n",
-	 NIL);
+  Printv(f->code, "\n", "if(r_swig_cb_data->errorOccurred) {\n",
+         "R_SWIG_popCallbackFunctionData(1);\n",
+         "Rf_error(\"error in calling R function as a function pointer (",
+         funName, ")\");\n", "}\n", NIL);
 
-
-
-  if(!isVoidType) {
-    /* Need to deal with the return type of the function pointer, not the function pointer itself.
-       So build a new node that has the relevant pieces.
-       XXX  Have to be a little more clever so that we can deal with struct A * - the * is getting lost.
-       Is this still true? If so, will a SwigType_push() solve things?
+  if (!isVoidType) {
+    /* Need to deal with the return type of the function pointer, not the
+       function pointer itself. So build a new node that has the relevant
+       pieces.
+       XXX  Have to be a little more clever so that we can deal with struct A *
+       - the * is getting lost. Is this still true? If so, will a
+       SwigType_push() solve things?
     */
     Parm *bbase = NewParmNode(rettype, n);
     String *returnTM = Swig_typemap_lookup("in", bbase, Swig_cresult_name(), f);
-    if(returnTM) {
+    if (returnTM) {
       String *tm = returnTM;
-      Replaceall(tm,"$input", "r_swig_cb_data->retValue");
+      Replaceall(tm, "$input", "r_swig_cb_data->retValue");
       replaceRClass(tm, rettype);
-      Replaceall(tm,"$owner", "0");
-      Replaceall(tm,"$disown","0");
+      Replaceall(tm, "$owner", "0");
+      Replaceall(tm, "$disown", "0");
       Printf(f->code, "%s\n", tm);
     }
     Delete(bbase);
@@ -631,11 +597,11 @@ String * R::createFunctionPointerHandler(SwigType *t, Node *n, int *numArgs) {
   Printv(f->code, "\n", UnProtectWrapupCode, NIL);
 
   if (SwigType_isreference(rettype)) {
-    Printv(f->code,  "return *", Swig_cresult_name(), ";\n", NIL);
+    Printv(f->code, "return *", Swig_cresult_name(), ";\n", NIL);
   } else if (SwigType_isrvalue_reference(rettype)) {
-    Printv(f->code,  "return std::move(*", Swig_cresult_name(), ");\n", NIL);
+    Printv(f->code, "return std::move(*", Swig_cresult_name(), ");\n", NIL);
   } else if (!isVoidType) {
-    Printv(f->code,  "return ", Swig_cresult_name(), ";\n", NIL);
+    Printv(f->code, "return ", Swig_cresult_name(), ";\n", NIL);
   }
 
   Printv(f->code, "\n}\n", NIL);
@@ -2095,7 +2061,7 @@ int R::functionWrapper(Node *n) {
   Printv(f->code, "}\n", NIL);
   Printv(sfun->code, "\n}", NIL);
 
-  Printf(sfun->code, "# ]]] End of %s\n", iname);
+  // Printf(sfun->code, "# ]]] End of %s\n", iname);
 
   bool isvoid = !Cmp(returntype, "void");
   Replaceall(f->code, "$isvoid", isvoid ? "1" : "0");
@@ -2124,7 +2090,9 @@ int R::functionWrapper(Node *n) {
     Printv(sfile, "attr(`", sfname, "`, \"inputTypes\") = c(",
 	   s_inputTypes, ")\n", NIL);
   Printv(sfile, "class(`", sfname, "`) = c(\"SWIGFunction\", class('",
-	 sfname, "'))\n\n", NIL);
+	 sfname, "'))\n\n# ]]] End of method\n\n", NIL);
+  
+  // Printf(sfun->code, "# ]]] End of %s\n", iname);
 
   if (memoryProfile) {
     Printv(sfile, "memory.profile()\n", NIL);

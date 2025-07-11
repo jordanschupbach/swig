@@ -257,7 +257,7 @@ $1 = %static_cast(CHAR(STRING_ELT($input, 0))[0],$1_ltype);
   "$result = ScalarReal(*($1));"; */
 
 %Rruntime %{
-# {{{ getitem/setitem methods (Rruntime)
+# [[[ getitem/setitem methods (Rruntime)
 setMethod('[', "ExternalReference",
 function(x,i,j, ..., drop=TRUE) 
 if (!is.null(x$"__getitem__")) 
@@ -276,7 +276,7 @@ function(from) {if (!is.null(from$"__str__")) from$"__str__"()})
 
 suppressMessages(suppressWarnings(setMethod('print', 'ExternalReference',
 function(x) {print(as(x, "character"))})))
-# }}} getitem/setitem methods (Rruntime)
+# ]]] getitem/setitem methods (Rruntime)
 %}
 
 
