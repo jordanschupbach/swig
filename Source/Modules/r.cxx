@@ -1686,7 +1686,6 @@ int R::functionWrapper(Node *n) {
   Parm *p;
   String *tm;
 
-  /// Printf(sfun->def, "# {{{ func wrapper :  %s\n", iname);
   p = l;
   while(p) {
     SwigType *resultType = Getattr(p, "type");
@@ -1771,7 +1770,7 @@ int R::functionWrapper(Node *n) {
 
   Printv(f->def, "SWIGEXPORT SEXP\n", wname, " ( ", NIL);
 
-  Printf(sfun->def, "# Start of %s\n", iname);
+  Printf(sfun->def, "# [[[ Start of %s\n", iname);
   Printv(sfun->def, "\n`", sfname, "` = function(", NIL);
 
   if(outputNamespaceInfo) {//XXX Need to be a little more discriminating
@@ -1784,6 +1783,8 @@ int R::functionWrapper(Node *n) {
       addNamespaceFunction(iname);
     }
   }
+
+  Printf(sfun->def, "# ]]] End of %s\n", iname);
 
   Swig_typemap_attach_parms("scoercein", l, f);
   Swig_typemap_attach_parms("scoerceout", l, f);
@@ -2168,7 +2169,6 @@ int R::functionWrapper(Node *n) {
   }
 
   addRegistrationRoutine(wname, addCopyParam ? nargs +1 : nargs);
-  // Printf(sfun->def, "# }}} func wrapper : %s\n", iname);
 
   DelWrapper(f);
   DelWrapper(sfun);
@@ -2303,7 +2303,7 @@ int R::classDeclaration(Node *n) {
 
   String *name = Getattr(n, "name");
   String *kind = Getattr(n, "kind");
-  Printf(s_classes, "# {{{ begin class %s\n", name);
+  Printf(s_classes, "# [[[ begin class %s\n", name);
 
   if (debugMode)
     Swig_print_node(n);
@@ -2438,7 +2438,7 @@ int R::classDeclaration(Node *n) {
 
     Delete(def);
   }
-  Printf(s_classes, "# }}} end class %s\n\n", name);
+  Printf(s_classes, "# ]]] end class %s\n\n", name);
 
   return status;
 }
@@ -2474,9 +2474,8 @@ int R::generateCopyRoutines(Node *n) {
 
   String *mangledName = SwigType_manglestr(name);
 
-  if (debugMode) {
+  if (debugMode)
     Printf(stdout, "generateCopyRoutines:  name = %s, %s\n", name, type);
-  }
 
   Printf(copyToR->def, "CopyToR%s = function(value, obj = new(\"%s\"))\n{\n",
 	 mangledName, name);
