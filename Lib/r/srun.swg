@@ -1,3 +1,4 @@
+# {{{ srun.swg (runtime)
 #                         srun.swg                            #
 #
 # This is the basic code that is needed at run time within R to
@@ -148,3 +149,5 @@ function(fun, userData = NULL)
 
 
 #######################################################################
+
+# }}} srun.swg (runtime)
