@@ -761,7 +761,7 @@ int R::DumpCode(Node *n) {
 
 
   Printf(scode, "%s\n\n", s_init);
-  Printf(scode, "%s\n\n", s_classes);
+  Printf(scode, "%s", s_classes);
   Printf(scode, "%s\n", sfile);
   Printf(scode, "%s\n", enum_def_calls);
 
@@ -2334,7 +2334,7 @@ int R::classDeclaration(Node *n) {
 
     Printf(sfile, "# [[[ destructor for %s\n", name);
     Printf(sfile, "setMethod('delete', '_p%s', function(obj) {delete%s(obj)})\n", getRClassName(name), getRClassName(name));
-    Printf(sfile, "# ]]] destructor for %s\n", name);
+    Printf(sfile, "# ]]] destructor for %s\n\n", name);
 
   }
   if(!opaque && !Strcmp(kind, "struct") && copyStruct) {
@@ -2489,8 +2489,8 @@ int R::generateCopyRoutines(Node *n) {
   Printf(sfile, "setMethod('copyToC', '%s', CopyToC%s);\n\n", rclassName,
 	 mangledName);
 
-  Printf(sfile, "# ]]] End definition of copy methods for %s\n", rclassName);
-  Printf(sfile, "# ]]] End definition of copy functions & methods for %s\n", rclassName);
+  Printf(sfile, "# ]]] End definition of copy methods for %s\n\n", rclassName);
+  Printf(sfile, "# ]]] End definition of copy functions & methods for %s\n\n", rclassName);
 
   String *m = NewStringf("%sCopyToR", name);
   addNamespaceMethod(m);
