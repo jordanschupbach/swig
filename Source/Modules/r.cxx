@@ -1770,6 +1770,7 @@ int R::functionWrapper(Node *n) {
 
   Printv(f->def, "SWIGEXPORT SEXP\n", wname, " ( ", NIL);
 
+  Printf(sfun->def, "# {{{ function wrapper : %s\n", iname);
   Printf(sfun->def, "# Start of %s\n", iname);
   Printv(sfun->def, "\n`", sfname, "` = function(", NIL);
 
@@ -2167,6 +2168,7 @@ int R::functionWrapper(Node *n) {
   }
 
   addRegistrationRoutine(wname, addCopyParam ? nargs +1 : nargs);
+  Printf(sfun->def, "# }}} function wrapper : %s\n", iname);
 
   DelWrapper(f);
   DelWrapper(sfun);
