@@ -1658,6 +1658,7 @@ int R::functionWrapper(Node *n) {
   String *iname = Getattr(n, "sym:name");
   String *returntype = Getattr(n, "type");
 
+  Printf(sfun->def, "# {{{ func wrapper :  %s\n", iname);
   if (debugMode) {
     Printf(stdout,
 	   "<functionWrapper> %s %s %s\n", fname, iname, returntype);
@@ -1770,7 +1771,6 @@ int R::functionWrapper(Node *n) {
 
   Printv(f->def, "SWIGEXPORT SEXP\n", wname, " ( ", NIL);
 
-  Printf(sfun->def, "# {{{ function wrapper : %s\n", iname);
   Printf(sfun->def, "# Start of %s\n", iname);
   Printv(sfun->def, "\n`", sfname, "` = function(", NIL);
 
@@ -2168,7 +2168,7 @@ int R::functionWrapper(Node *n) {
   }
 
   addRegistrationRoutine(wname, addCopyParam ? nargs +1 : nargs);
-  Printf(sfun->def, "# }}} function wrapper : %s\n", iname);
+  Printf(sfun->def, "# }}} func wrapper : %s\n", iname);
 
   DelWrapper(f);
   DelWrapper(sfun);
