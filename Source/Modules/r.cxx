@@ -2430,13 +2430,12 @@ int R::classDeclaration(Node *n) {
       c = nextSibling(c);
     }
     Printf(def, "),\n%scontains = \"RSWIGStruct\")\n", tab8);
-    Printf(s_classes, "%s\n\n# End class %s\n\n", def, name);
-    Printf(s_classes, "# }}} end class");
 
     generateCopyRoutines(n);
 
     Delete(def);
   }
+  Printf(s_classes, "%s\n\n# End class %s\n\n", def, name);
 
   return status;
 }
