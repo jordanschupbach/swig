@@ -1511,7 +1511,7 @@ void R::dispatchFunction(Node *n) {
     Replace(sfname, "new_", "", DOH_REPLACE_FIRST);
 
   Printf(f->def,
-	 "`%s` <- function(...) {", sfname);
+	 "# [[[ Start of %s\n`%s` <- function(...) {", sfname, sfname);
   if (debugMode) {
     Swig_print_node(n);
   }
@@ -1598,6 +1598,7 @@ void R::dispatchFunction(Node *n) {
       "}", sfname);
   Printv(f->code, ";\nf(...)", NIL);
   Printv(f->code, ";\n}", NIL);
+  Printf(f->code, "\n# ]]] End of %s", sfname);
   Wrapper_print(f, sfile);
   Printv(sfile, "# Dispatch function\n", NIL);
   DelWrapper(f);
