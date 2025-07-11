@@ -1784,7 +1784,6 @@ int R::functionWrapper(Node *n) {
     }
   }
 
-  Printf(sfun->def, "# ]]] End of %s\n", iname);
 
   Swig_typemap_attach_parms("scoercein", l, f);
   Swig_typemap_attach_parms("scoerceout", l, f);
@@ -2170,6 +2169,7 @@ int R::functionWrapper(Node *n) {
 
   addRegistrationRoutine(wname, addCopyParam ? nargs +1 : nargs);
 
+  Printf(sfun->def, "# ]]] End of %s\n", iname);
   DelWrapper(f);
   DelWrapper(sfun);
 
