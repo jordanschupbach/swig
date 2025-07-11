@@ -2515,21 +2515,21 @@ int R::generateCopyRoutines(Node *n) {
   }
   Printf(copyToR->code, "obj;\n}\n\n");
   String *rclassName = getRClassNameCopyStruct(type, 0); // without the Ref.
-  Printf(sfile, "# Start definition of copy functions & methods for %s\n", rclassName);
+  Printf(sfile, "# [[[ Start definition of copy functions & methods for %s\n", rclassName);
 
   Wrapper_print(copyToR, sfile);
   Printf(copyToC->code, "obj\n}\n\n");
   Wrapper_print(copyToC, sfile);
 
 
-  Printf(sfile, "# Start definition of copy methods for %s\n", rclassName);
+  Printf(sfile, "# [[[ Start definition of copy methods for %s\n", rclassName);
   Printf(sfile, "setMethod('copyToR', '_p%s', CopyToR%s);\n", mangledName,
 	 mangledName);
   Printf(sfile, "setMethod('copyToC', '%s', CopyToC%s);\n\n", rclassName,
 	 mangledName);
 
-  Printf(sfile, "# End definition of copy methods for %s\n", rclassName);
-  Printf(sfile, "# End definition of copy functions & methods for %s\n", rclassName);
+  Printf(sfile, "# ]]] End definition of copy methods for %s\n", rclassName);
+  Printf(sfile, "# ]]] End definition of copy functions & methods for %s\n", rclassName);
 
   String *m = NewStringf("%sCopyToR", name);
   addNamespaceMethod(m);
