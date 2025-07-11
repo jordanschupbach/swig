@@ -15,8 +15,7 @@
 #include "swigmod.h"
 #include "cparse.h"
 
-static String* replaceInitialDash(const String *name)
-{
+static String *replaceInitialDash(const String *name) {
   String *retval;
   if (!Strncmp(name, "_", 1)) {
     retval = Copy(name);
@@ -59,7 +58,7 @@ static String * getRTypeName(SwigType *t, int *outCount = NULL) {
  * to request both
  * --------------------------------------------------------------*/
 
-static String *getRClassName(String *retType, int deRef=0, int upRef=0) {
+static String *getRClassName(String *retType, int deRef = 0, int upRef = 0) {
   SwigType *resolved = SwigType_typedef_resolve_all(retType);
   int ispointer = SwigType_ispointer(resolved);
   int isreference = SwigType_isreference(resolved);
@@ -73,10 +72,10 @@ static String *getRClassName(String *retType, int deRef=0, int upRef=0) {
     if (isreference) {
       SwigType_del_reference(resolved);
     }
-  } 
+  }
   String *tmp = NewString("");
   Insert(tmp, 0, Char(SwigType_manglestr(resolved)));
-  return(tmp);
+  return (tmp);
 }
 
 /* --------------------------------------------------------------
@@ -85,38 +84,35 @@ static String *getRClassName(String *retType, int deRef=0, int upRef=0) {
  * Now handles arrays, i.e. struct A[2]
  * --------------------------------------------------------------*/
 
-
-static String * getRClassNameCopyStruct(String *retType, int addRef) {
+static String *getRClassNameCopyStruct(String *retType, int addRef) {
   String *tmp = NewString("");
 
   List *l = SwigType_split(retType);
   int n = Len(l);
-  if(!l || n == 0) {
+  if (!l || n == 0) {
 #ifdef R_SWIG_VERBOSE
     Printf(stdout, "SwigType_split return an empty list for %s\n", retType);
 #endif
-    return(tmp);
+    return (tmp);
   }
 
-
-  String *el = Getitem(l, n-1);
+  String *el = Getitem(l, n - 1);
   char *ptr = Char(el);
-  if(strncmp(ptr, "struct ", 7) == 0)
+  if (strncmp(ptr, "struct ", 7) == 0)
     ptr += 7;
 
   Printf(tmp, "%s", ptr);
 
-  if(addRef) {
-    for(int i = 0; i < n; i++) {
-      if(Strcmp(Getitem(l, i), "p.") == 0 ||
-	 Strncmp(Getitem(l, i), "a(", 2) == 0)
-	Printf(tmp, "Ref");
+  if (addRef) {
+    for (int i = 0; i < n; i++) {
+      if (Strcmp(Getitem(l, i), "p.") == 0 ||
+          Strncmp(Getitem(l, i), "a(", 2) == 0)
+        Printf(tmp, "Ref");
     }
   }
 
   return tmp;
 }
-
 
 /* -------------------------------------------------------------
  * Write the elements of a list to the File*, one element per line.
@@ -125,16 +121,12 @@ static String * getRClassNameCopyStruct(String *retType, int addRef) {
  * a comma after each element, except the last one.
  * --------------------------------------------------------------*/
 
-
 static void writeListByLine(List *l, File *out, bool quote = 0) {
   int i, n = Len(l);
-  for(i = 0; i < n; i++)
-    Printf(out, "%s%s%s%s%s\n", tab8,
-	   quote ? "\"" :"",
-	   Getitem(l, i),
-	   quote ? "\"" :"", i < n-1 ? "," : "");
+  for (i = 0; i < n; i++)
+    Printf(out, "%s%s%s%s%s\n", tab8, quote ? "\"" : "", Getitem(l, i),
+           quote ? "\"" : "", i < n - 1 ? "," : "");
 }
-
 
 static const char *usage = "\
 R Options (available with -r)\n\
@@ -157,18 +149,18 @@ R Options (available with -r)\n\
  * Display the help for this module on the screen/console.
  * --------------------------------------------------------------*/
 
-static void showUsage() {
-  fputs(usage, stdout);
-}
+static void showUsage() { fputs(usage, stdout); }
 
 static bool expandTypedef(SwigType *t) {
-  if (SwigType_isenum(t)) return false;
+  if (SwigType_isenum(t))
+    return false;
   String *prefix = SwigType_prefix(t);
-  if (Strncmp(prefix, "f", 1)) return false;
-  if (Strncmp(prefix, "p.f", 3)) return false;
+  if (Strncmp(prefix, "f", 1))
+    return false;
+  if (Strncmp(prefix, "p.f", 3))
+    return false;
   return true;
 }
-
 
 /* -------------------------------------------------------------
  * Determine whether  we should add a .copy argument to the S function
@@ -178,10 +170,9 @@ static bool expandTypedef(SwigType *t) {
 static int addCopyParameter(SwigType *type) {
   int ok = 0;
   ok = Strncmp(type, "struct ", 7) == 0 || Strncmp(type, "p.struct ", 9) == 0;
-  if(!ok) {
+  if (!ok) {
     ok = Strncmp(type, "p.", 2);
   }
-
   return(ok);
 }
 
@@ -192,7 +183,9 @@ static void replaceRClass(String *tm, SwigType *type) {
   Replaceall(tm, "$R_class", tmp);
   Replaceall(tm, "$*R_class", tmp_base);
   Replaceall(tm, "$&R_class", tmp_ref);
-  Delete(tmp); Delete(tmp_base); Delete(tmp_ref);
+  Delete(tmp);
+  Delete(tmp_base);
+  Delete(tmp_ref);
 }
 
 class R : public Language {
@@ -201,27 +194,22 @@ public:
   void registerClass(Node *n);
   void main(int argc, char *argv[]);
   int top(Node *n);
-
   void dispatchFunction(Node *n);
   int functionWrapper(Node *n);
   int constantWrapper(Node *n);
   int variableWrapper(Node *n);
-
   int classDeclaration(Node *n);
   int enumDeclaration(Node *n);
   String *enumValue(Node *n);
   virtual int enumvalueDeclaration(Node *n);
   int membervariableHandler(Node *n);
-
   int typedefHandler(Node *n);
-
   static List *Swig_overload_rank(Node *n, bool script_lang_wrapping);
 
   int memberfunctionHandler(Node *n) {
     if (debugMode)
-      Printf(stdout, "<memberfunctionHandler> %s %s\n",
-	     Getattr(n, "name"),
-	     Getattr(n, "type"));
+      Printf(stdout, "<memberfunctionHandler> %s %s\n", Getattr(n, "name"),
+             Getattr(n, "type"));
     member_name = Getattr(n, "sym:name");
     processing_class_member_function = 1;
     int status = Language::memberfunctionHandler(n);
