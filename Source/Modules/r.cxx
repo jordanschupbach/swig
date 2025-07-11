@@ -1946,6 +1946,7 @@ int R::functionWrapper(Node *n) {
 
     Printf(sargs, "as.logical(.copy), ");
   }
+  Printf(sfun->def, "# ]]] End of %s\n", iname);
 
   Printv(f->def, ")\n{\n", NIL);
   // SWIG_fail in R leads to a call to Rf_error() which calls longjmp()
@@ -2169,7 +2170,6 @@ int R::functionWrapper(Node *n) {
 
   addRegistrationRoutine(wname, addCopyParam ? nargs +1 : nargs);
 
-  Printf(sfun->def, "# ]]] End of %s\n", iname);
   DelWrapper(f);
   DelWrapper(sfun);
 
