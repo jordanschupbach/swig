@@ -1946,7 +1946,6 @@ int R::functionWrapper(Node *n) {
 
     Printf(sargs, "as.logical(.copy), ");
   }
-  Printf(sfun->def, "# ]]] End of %s\n", iname);
 
   Printv(f->def, ")\n{\n", NIL);
   // SWIG_fail in R leads to a call to Rf_error() which calls longjmp()
@@ -2107,6 +2106,8 @@ int R::functionWrapper(Node *n) {
   
   Printv(f->code, "}\n", NIL);
   Printv(sfun->code, "\n}", NIL);
+
+  Printf(sfun->code, "# ]]] End of %s\n", iname);
 
   bool isvoid = !Cmp(returntype, "void");
   Replaceall(f->code, "$isvoid", isvoid ? "1" : "0");
