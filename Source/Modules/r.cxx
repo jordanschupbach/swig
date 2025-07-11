@@ -1686,6 +1686,7 @@ int R::functionWrapper(Node *n) {
   Parm *p;
   String *tm;
 
+  /// Printf(sfun->def, "# {{{ func wrapper :  %s\n", iname);
   p = l;
   while(p) {
     SwigType *resultType = Getattr(p, "type");
@@ -1752,7 +1753,6 @@ int R::functionWrapper(Node *n) {
 
   Wrapper *f = NewWrapper();
   Wrapper *sfun = NewWrapper();
-  Printf(sfun->def, "# {{{ func wrapper :  %s\n", iname);
 
   int isVoidReturnType = (Strcmp(returntype, "void") == 0);
   // Need to use the unresolved returntype since
@@ -2168,7 +2168,7 @@ int R::functionWrapper(Node *n) {
   }
 
   addRegistrationRoutine(wname, addCopyParam ? nargs +1 : nargs);
-  Printf(sfun->def, "# }}} func wrapper : %s\n", iname);
+  // Printf(sfun->def, "# }}} func wrapper : %s\n", iname);
 
   DelWrapper(f);
   DelWrapper(sfun);
