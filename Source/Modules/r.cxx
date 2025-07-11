@@ -2301,6 +2301,7 @@ int R::classDeclaration(Node *n) {
 
   String *name = Getattr(n, "name");
   String *kind = Getattr(n, "kind");
+  Printf(s_classes, "# {{{ begin class %s\n", name);
 
   if (debugMode)
     Swig_print_node(n);
@@ -2430,6 +2431,7 @@ int R::classDeclaration(Node *n) {
     }
     Printf(def, "),\n%scontains = \"RSWIGStruct\")\n", tab8);
     Printf(s_classes, "%s\n\n# End class %s\n\n", def, name);
+    Printf(s_classes, "# }}} end class");
 
     generateCopyRoutines(n);
 
