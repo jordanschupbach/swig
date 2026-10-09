@@ -8,6 +8,15 @@ Version 4.6.0 (in progress)
 ===========================
 
 2026-10-09: jordanschupbach
+            [OCaml] Fix wrapping a C++11 strongly typed enum, whose enumerators were referred to
+            without the enum's name in the generated C++ code, failing to compile:
+
+              enum class Color { Red, Green };
+
+            gave "static int SWIG_ENUM__Red = Red;" and now gives
+            "static int SWIG_ENUM__Color__Red = static_cast< int >(Color::Red);".
+
+2026-10-09: jordanschupbach
             [R] Fix a std::vector<size_t> instantiated with %template, which was returned as an R
             vector by the C wrapper but then wrapped as a pointer object on the R side, so calling
             a function returning one failed with "invalid object for slot "ref"":

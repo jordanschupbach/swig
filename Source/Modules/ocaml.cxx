@@ -1297,9 +1297,17 @@ public:
     String *name = Getattr(n, "name");
     String *symname = Getattr(n, "sym:name");
     SwigType *qtype = 0;
+    /* The enumerators of a C++11 strongly typed enum are scoped by the name of the enum */
+    Node *enum_node = parentNode(n);
+    bool scoped_enum = enum_node && GetFlag(enum_node, "scopedenum");
 
     if (name_qualifier_type) {
       qtype = Copy(name_qualifier_type);
+      if (scoped_enum) {
+        String *enum_name = Swig_scopename_last(Getattr(enum_node, "name"));
+        Printv(qtype, enum_name, "::", NIL);
+        Delete(enum_name);
+      }
       Printv(qtype, name, NIL);
     }
 
@@ -1308,7 +1316,13 @@ public:
       SetFlag(n, "feature:immutable");
       Setattr(n, "feature:enumvalue", "1");  // this does not appear to be used
 
-      Setattr(n, "qualified:name", SwigType_namestr(qtype));
+      if (scoped_enum) {
+        /* A strongly typed enumerator does not convert implicitly to the integer type of the constant */
+        SwigType *type = Getattr(n, "type");
+        Setattr(n, "qualified:name", NewStringf("static_cast< %s >(%s)", type ? SwigType_str(type, 0) : "int", SwigType_namestr(qtype)));
+      } else {
+        Setattr(n, "qualified:name", SwigType_namestr(qtype));
+      }
 
       String *evname = SwigType_manglestr(qtype);
       Insert(evname, 0, "SWIG_ENUM_");
