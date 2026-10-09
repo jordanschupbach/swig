@@ -7,6 +7,18 @@ the issue number to the end of the URL: https://github.com/swig/swig/issues/
 Version 4.6.0 (in progress)
 ===========================
 
+2026-10-09: jordanschupbach
+            [R] Fix overload dispatch for a std::vector<std::vector<T> > parameter, where T is
+            int, unsigned int, float, double or bool, when called with a list of two or more
+            elements. The generated type check combined two vectors with '||', which is an
+            error since R 4.3:
+
+              int count_rows(const std::vector<std::vector<double> > &vv);
+              int count_rows(double);
+
+            count_rows(list(c(1, 2), c(3, 4))) now returns 2 instead of failing with
+            "'length = 2' in coercion to 'logical(1)'".
+
 2026-10-07: olly
 	    [Guile] #3194 The default "procdoc" format is now "plain" (which
 	    works with Guile 1.4.1 and later), and the old "guile-1.4" format
