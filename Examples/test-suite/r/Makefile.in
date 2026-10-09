@@ -27,6 +27,7 @@ CPP_TEST_CASES += \
 	r_overload_array \
 	r_overload_vector_vector \
 	r_sexp \
+	r_std_vector_size_t \
         r_overload_comma \
 	r_use_isnull \
 

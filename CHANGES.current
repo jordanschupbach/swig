@@ -8,6 +8,16 @@ Version 4.6.0 (in progress)
 ===========================
 
 2026-10-09: jordanschupbach
+            [R] Fix a std::vector<size_t> instantiated with %template, which was returned as an R
+            vector by the C wrapper but then wrapped as a pointer object on the R side, so calling
+            a function returning one failed with "invalid object for slot "ref"":
+
+              %template(SizeVector) std::vector<size_t>;
+              std::vector<size_t> make_sizes();
+
+            make_sizes() now returns an R integer vector, as for std::vector<unsigned long>.
+
+2026-10-09: jordanschupbach
             [R] Fix overload dispatch for a std::vector<std::vector<T> > parameter, where T is
             int, unsigned int, float, double or bool, when called with a list of two or more
             elements. The generated type check combined two vectors with '||', which is an

@@ -949,6 +949,8 @@ std::vector< std::basic_string<char> > *,
 %typemap("rtype") std::vector<long long>, std::vector<long long> *, std::vector<long long> & = std::vector<int>;
 %typemap("rtype") std::vector<unsigned long long>, std::vector<unsigned long long> *, std::vector<unsigned long long> & = std::vector<int>;
 
+%typemap("rtype") std::vector<size_t>, std::vector<size_t> *, std::vector<size_t> & = std::vector<int>;
+
 
 %typemap("scoercein") std::vector<signed char>, std::vector<signed char> *, std::vector<signed char> & = std::vector<int>;
 %typemap("scoercein") std::vector<signed short>, std::vector<signed short> *, std::vector<signed short> & = std::vector<int>;
@@ -961,6 +963,8 @@ std::vector< std::basic_string<char> > *,
 %typemap("scoercein") std::vector<long long>, std::vector<long long> *, std::vector<long long> & = std::vector<int>;
 %typemap("scoercein") std::vector<unsigned long long>, std::vector<unsigned long long> *, std::vector<unsigned long long> & = std::vector<int>;
 
+%typemap("scoercein") std::vector<size_t>, std::vector<size_t> *, std::vector<size_t> & = std::vector<int>;
+
 %typemap("rtypecheck") std::vector<signed char>, std::vector<signed char> *, std::vector<signed char> & = std::vector<int>;
 %typemap("rtypecheck") std::vector<signed short>, std::vector<signed short> *, std::vector<signed short> & = std::vector<int>;
 %typemap("rtypecheck") std::vector<unsigned char>, std::vector<unsigned char> *, std::vector<unsigned char> & = std::vector<int>;
@@ -971,6 +975,8 @@ std::vector< std::basic_string<char> > *,
 
 %typemap("rtypecheck") std::vector<long long>, std::vector<long long> *, std::vector<long long> & = std::vector<int>;
 %typemap("rtypecheck") std::vector<unsigned long long>, std::vector<unsigned long long> *, std::vector<unsigned long long> & = std::vector<int>;
+
+%typemap("rtypecheck") std::vector<size_t>, std::vector<size_t> *, std::vector<size_t> & = std::vector<int>;
 
 ///////////////////////////////////////////////////////////////
 
@@ -1081,6 +1087,11 @@ std::vector< std::basic_string<char> > *,
    std::vector<unsigned long long>,
    std::vector<unsigned long long>*,
    std::vector<unsigned long long>&
+ %{    %}
+
+%typemap(scoerceout) std::vector<size_t>,
+   std::vector<size_t>*,
+   std::vector<size_t>&
  %{    %}
 
 %apply std::vector< std::basic_string<char> > { std::vector<std::string> };
