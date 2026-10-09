@@ -232,3 +232,8 @@ Examples/r/*/.RData
 # Scilab
 Examples/test-suite/scilab/*/
 loader.sce
+
+# FORK(nix-flake): Nix and direnv outputs
+/result
+/result-*
+/.direnv/

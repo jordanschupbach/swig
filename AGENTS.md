@@ -2,6 +2,11 @@
 
 This file provides guidance to AI agents such as Claude Code (claude.ai/code) when working with code in this repository.
 
+## This repository is a fork - read first
+
+<!-- FORK(fork-infra): fork-only section -->
+This is a fork of https://github.com/swig/swig, described in `FORK.md`. Before making any change or commit, read **`.agents/skills/swig-fork/SKILL.md`**: it holds the license rules, the one topic per commit discipline, the mandatory `Fork-Topic:` commit trailer, and the tooling used to extract changes as patches for upstream. Its rules apply in addition to everything below.
+
 ## Project skill files - read these first
 
 A number of short `SKILL.md` files under `.agents/skills/` are the canonical references for the most common tasks an AI agent performs in this repo. Open the matching file **before** improvising; each is one or two pages and contains the specific commands, flags, and conventions that AGENTS.md only summarises:
