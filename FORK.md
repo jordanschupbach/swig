@@ -38,3 +38,4 @@ it progresses:
 | nix-flake | 2026-10-09 | fork-only | Nix flake to build and install SWIG, with a direnv dev shell |
 | r-vector-vector-typecheck | 2026-10-09 | candidate | [R] Overload dispatch for std::vector<std::vector<T> > failed for lists of two or more rows on R 4.3+ |
 | r-vector-size-t | 2026-10-09 | candidate | [R] Returned std::vector<size_t> was wrapped as a pointer object instead of an R vector |
+| ocaml-scoped-enum-values | 2026-10-09 | candidate | [OCaml] Enumerators of a C++11 enum class were emitted unqualified and failed to compile |
